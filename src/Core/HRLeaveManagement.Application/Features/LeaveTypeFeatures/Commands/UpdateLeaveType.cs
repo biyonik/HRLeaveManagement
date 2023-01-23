@@ -33,6 +33,7 @@ public class UpdateLeaveType
             
             var mappedData = _mapper.Map<LeaveType>(request.LeaveTypeForAddDto);
             var result = await _leaveTypeService.UpdateAsync(mappedData, cancellationToken);
+            
             if (result) return new SuccessResult("Leave type updated successfully.");
             return new ErrorResult("Leave type updated failed!");
         }
