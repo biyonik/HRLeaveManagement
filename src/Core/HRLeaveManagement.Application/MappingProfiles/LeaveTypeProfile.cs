@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HRLeaveManagement.Application.DataTransformationObjects.LeaveType;
 using HRLeaveManagement.Domain;
 
 namespace HRLeaveManagement.Application.MappingProfiles;
