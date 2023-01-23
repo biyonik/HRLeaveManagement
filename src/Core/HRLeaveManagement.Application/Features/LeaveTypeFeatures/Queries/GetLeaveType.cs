@@ -1,19 +1,23 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using HRLeaveManagement.Application.Contracts.Services;
 using HRLeaveManagement.Application.DataTransformationObjects.LeaveType;
 using HRLeaveManagement.Application.Messaging;
+using HRLeaveManagement.Domain;
 
 namespace HRLeaveManagement.Application.Features.LeaveTypeFeatures.Queries;
 
-public sealed class GetAllLeaveTypes
+public class GetLeaveType
 {
-    public sealed record Query : IQuery<Response>;
+    public sealed record Query(
+        Expression<Func<LeaveType, bool>> Expression
+    ) : IQuery<Response>;
 
     public sealed record Response(
-        IReadOnlyList<LeaveTypeForListDto?> LeaveTypeForListDtos
+        LeaveTypeForDetailDto LeaveTypeForDetailDto    
     );
     
-    public sealed class Handler: IQueryHandler<Query, Response>
+    public class Handler: IQueryHandler<Query, Response>
     {
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly IMapper _mapper;
@@ -26,8 +30,8 @@ public sealed class GetAllLeaveTypes
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            var leaveTypes = await _leaveTypeService.GetAllAsync(cancellationToken);
-            var mappedData = _mapper.Map<IReadOnlyList<LeaveTypeForListDto>>(leaveTypes);
+            var leaveType = await _leaveTypeService.GetAsync(request.Expression, cancellationToken);
+            var mappedData = _mapper.Map<LeaveTypeForDetailDto>(leaveType);
             return new(mappedData);
         }
     }
