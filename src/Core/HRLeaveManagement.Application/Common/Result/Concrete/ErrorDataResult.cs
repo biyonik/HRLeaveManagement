@@ -10,7 +10,7 @@ public class ErrorDataResult<T>: IDataResult<T>
 
     public ErrorDataResult(T data)
     {
-        IsSucceed = true;
+        IsSucceed = false;
         Data = data;
     }
 
@@ -18,11 +18,11 @@ public class ErrorDataResult<T>: IDataResult<T>
     {
         Message = message;
         Data = data;
-        IsSucceed = true;
+        IsSucceed = false;
     }
 
     public ErrorDataResult(string message): this(default, message)
     {
-        IsSucceed = true;
+        IsSucceed = false;
     }
 }

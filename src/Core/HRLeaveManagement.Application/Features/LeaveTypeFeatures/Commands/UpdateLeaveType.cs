@@ -3,6 +3,7 @@ using HRLeaveManagement.Application.Common.Result.Abstract;
 using HRLeaveManagement.Application.Common.Result.Concrete;
 using HRLeaveManagement.Application.Contracts.Services;
 using HRLeaveManagement.Application.DataTransformationObjects.LeaveType;
+using HRLeaveManagement.Application.Exceptions;
 using HRLeaveManagement.Application.Messaging;
 using HRLeaveManagement.Domain;
 
@@ -29,7 +30,7 @@ public class UpdateLeaveType
         public async Task<IResult> Handle(Command request, CancellationToken cancellationToken)
         {
             var isExist = await _leaveTypeService.GetByIdAsync(request.LeaveTypeForAddDto.Id, cancellationToken);
-            if (isExist == null) return new SuccessResult("Leave type not found!");
+            if (isExist == null) throw new NotFoundException(nameof(LeaveType), request.LeaveTypeForAddDto.Id);
             
             var mappedData = _mapper.Map<LeaveType>(request.LeaveTypeForAddDto);
             var result = await _leaveTypeService.UpdateAsync(mappedData, cancellationToken);

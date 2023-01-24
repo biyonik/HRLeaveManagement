@@ -1,7 +1,9 @@
 ﻿using HRLeaveManagement.Application.Common.Result.Abstract;
 using HRLeaveManagement.Application.Common.Result.Concrete;
 using HRLeaveManagement.Application.Contracts.Services;
+using HRLeaveManagement.Application.Exceptions;
 using HRLeaveManagement.Application.Messaging;
+using HRLeaveManagement.Domain;
 
 namespace HRLeaveManagement.Application.Features.LeaveTypeFeatures.Commands;
 
@@ -23,7 +25,8 @@ public class DeleteLeaveType
         public async Task<IResult> Handle(Command request, CancellationToken cancellationToken)
         {
             var entity = await _leaveTypeService.GetByIdAsync(request.Id, cancellationToken);
-            if (entity == null) return new ErrorResult("Leave type not found!");
+            if (entity == null) throw new NotFoundException(nameof(LeaveType), request.Id);
+            
             var deleteResult = await _leaveTypeService.RemoveAsync(entity, cancellationToken);
 
             if (deleteResult) return new SuccessResult("Leave type removed successfully.");
