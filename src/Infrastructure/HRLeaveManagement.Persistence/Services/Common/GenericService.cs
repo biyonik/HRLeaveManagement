@@ -1,10 +1,11 @@
 ﻿using System.Linq.Expressions;
 using HRLeaveManagement.Application.Contracts.Persistence.Common;
 using HRLeaveManagement.Application.Contracts.Services.Common;
+using HRLeaveManagement.Domain.Common;
 
 namespace HRLeaveManagement.Persistence.Services.Common;
 
-public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : class, new()
+public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : BaseEntity, new()
 {
     private readonly IGenericRepository<TEntity> _genericRepository;
 

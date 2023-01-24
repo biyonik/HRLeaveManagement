@@ -39,8 +39,8 @@ public class CreateLeaveType
 
         private async Task<bool> LeaveTypeNameUnique(Command command, CancellationToken cancellationToken)
         {
-            var  entity = await _leaveTypeService.GetAsync(x => x.Name == command.LeaveTypeForAddDto.Name, cancellationToken);
-            return entity != null;
+            var result = await _leaveTypeService.IsLeaveTypeUnique(command.LeaveTypeForAddDto.Name, cancellationToken);
+            return result;
         }
     }
 

@@ -1,8 +1,9 @@
 ﻿using System.Linq.Expressions;
+using HRLeaveManagement.Domain.Common;
 
 namespace HRLeaveManagement.Application.Contracts.Persistence.Common;
 
-public interface IGenericRepository<T> where T: class, new()
+public interface IGenericRepository<T> where T: BaseEntity, new()
 {
     Task<bool> CreateAsync(T entity, CancellationToken cancellationToken);
     Task<bool> UpdateAsync(T entity, CancellationToken cancellationToken);

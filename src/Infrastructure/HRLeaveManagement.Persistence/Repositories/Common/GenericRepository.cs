@@ -1,11 +1,12 @@
 ﻿using System.Linq.Expressions;
 using HRLeaveManagement.Application.Contracts.Persistence.Common;
+using HRLeaveManagement.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRLeaveManagement.Persistence.Repositories.Common;
 
 public class GenericRepository<TEntity, TContext>: IGenericRepository<TEntity> 
-    where TEntity : class, new()
+    where TEntity : BaseEntity, new()
     where TContext: DbContext, new()
 {
     private TContext _context;
@@ -38,19 +39,19 @@ public class GenericRepository<TEntity, TContext>: IGenericRepository<TEntity>
     public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
     {
         return expression != null
-            ? Entity.Where(expression).FirstOrDefaultAsync(cancellationToken)
+            ? Entity.Where(expression).AsNoTracking().FirstOrDefaultAsync(cancellationToken)
             : Entity.FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<TEntity?> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
     {
-        return await Entity.FindAsync(Id);
+        return await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
     }
 
     public Task<IReadOnlyList<TEntity>?> GetAllAsync(CancellationToken cancellationToken, Expression<Func<TEntity, bool>>? expression = null)
     {
         return Task.FromResult(expression != null
-            ? Entity.Where(expression).ToListAsync(cancellationToken: cancellationToken) as IReadOnlyList<TEntity>
-            : Entity.ToListAsync(cancellationToken) as IReadOnlyList<TEntity>);
+            ? Entity.Where(expression).AsNoTracking().ToListAsync(cancellationToken: cancellationToken) as IReadOnlyList<TEntity>
+            : Entity.AsNoTracking().ToListAsync(cancellationToken) as IReadOnlyList<TEntity>);
     }
 }
