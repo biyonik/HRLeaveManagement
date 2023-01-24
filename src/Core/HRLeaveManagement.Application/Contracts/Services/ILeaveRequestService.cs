@@ -5,5 +5,7 @@ namespace HRLeaveManagement.Application.Contracts.Services;
 
 public interface ILeaveRequestService: IGenericService<LeaveRequest>
 {
-    
+    Task<IReadOnlyList<LeaveRequest>> GetLeaveRequestWithDetails(Guid Id);
+    Task<IReadOnlyList<LeaveRequest>?> GetLeaveRequestsWithDetails();
+    Task<IReadOnlyList<LeaveRequest>?> GetLeaveRequestsWithDetailsByUserId(Guid userId);
 }

@@ -2,6 +2,7 @@
 using HRLeaveManagement.Application.Contracts.Persistence.Common;
 using HRLeaveManagement.Application.Contracts.Services.Common;
 using HRLeaveManagement.Domain.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRLeaveManagement.Persistence.Services.Common;
 
@@ -29,18 +30,28 @@ public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : 
         return await _genericRepository.RemoveAsync(entity, cancellationToken);
     }
 
-    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
+    public async Task<bool> AddRangeAsync(IList<TEntity> entities, CancellationToken cancellationToken)
     {
-        return await _genericRepository.GetAsync(expression, cancellationToken);
+        return await _genericRepository.AddRangeAsync(entities, cancellationToken);
     }
 
-    public async Task<TEntity?> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
+    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken)
+    {
+        return await _genericRepository.GetAsync(expression, cancellationToken).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+    }
+
+    public async Task<IQueryable<TEntity>> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
     {
         return await _genericRepository.GetByIdAsync(Id, cancellationToken);
     }
 
     public async Task<IReadOnlyList<TEntity>?> GetAllAsync(CancellationToken cancellationToken, Expression<Func<TEntity, bool>>? expression = null)
     {
-        return await _genericRepository.GetAllAsync(cancellationToken, expression);
+        return await (await _genericRepository.GetAllAsync(cancellationToken, expression)).ToListAsync(cancellationToken: cancellationToken);
+    }
+
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
+    {
+        return await _genericRepository.AnyAsync(expression, cancellationToken);
     }
 }

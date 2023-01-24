@@ -10,7 +10,7 @@ namespace HRLeaveManagement.Application.Features.LeaveTypeFeatures.Queries;
 public class GetLeaveType
 {
     public sealed record Query(
-        Expression<Func<LeaveType, bool>> Expression
+        Expression<Func<LeaveType, bool>>? Expression
     ) : IQuery<Response>;
 
     public sealed record Response(

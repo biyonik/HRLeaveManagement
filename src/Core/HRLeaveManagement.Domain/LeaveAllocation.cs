@@ -9,4 +9,6 @@ public sealed class LeaveAllocation: BaseEntity
     
     public Guid LeaveTypeId { get; set; }
     public LeaveType? LeaveType { get; set; }
+
+    public Guid EmployeeId { get; set; } = Guid.Empty;
 }

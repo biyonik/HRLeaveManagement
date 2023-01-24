@@ -8,8 +8,10 @@ public interface IGenericService<TEntity>
     Task<bool> CreateAsync(TEntity entity, CancellationToken cancellationToken);
     Task<bool> UpdateAsync(TEntity entity, CancellationToken cancellationToken);
     Task<bool> RemoveAsync(TEntity entity, CancellationToken cancellationToken);
-    Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken);
-    Task<TEntity?> GetByIdAsync(Guid Id, CancellationToken cancellationToken); 
+    Task<bool> AddRangeAsync(IList<TEntity> entities, CancellationToken cancellationToken);
+    Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken);
+    Task<IQueryable<TEntity>> GetByIdAsync(Guid Id, CancellationToken cancellationToken); 
     Task<IReadOnlyList<TEntity>?> GetAllAsync(CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? expression = null);
+    Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken);
 }

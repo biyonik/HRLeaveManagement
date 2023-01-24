@@ -2,6 +2,7 @@
 using HRLeaveManagement.Application.Contracts.Services;
 using HRLeaveManagement.Domain;
 using HRLeaveManagement.Persistence.Services.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRLeaveManagement.Persistence.Services;
 
@@ -15,6 +16,6 @@ public class LeaveTypeService: GenericService<LeaveType>, ILeaveTypeService
 
     public async Task<bool> IsLeaveTypeUnique(string leaveTypeName, CancellationToken cancellationToken = default)
     {
-        return await _genericRepository.GetAsync(x => x.Name == leaveTypeName, cancellationToken) != null;
+        return await _genericRepository.GetAsync(x => x.Name == leaveTypeName, cancellationToken).FirstOrDefaultAsync(cancellationToken: cancellationToken) != null;
     }
 }
