@@ -8,7 +8,6 @@ using HRLeaveManagement.Application.DataTransformationObjects.LeaveType;
 using HRLeaveManagement.Application.Exceptions;
 using HRLeaveManagement.Application.Messaging;
 using HRLeaveManagement.Domain;
-using Microsoft.EntityFrameworkCore;
 
 namespace HRLeaveManagement.Application.Features.LeaveTypeFeatures.Commands;
 
@@ -46,8 +45,8 @@ public class UpdateLeaveType
             
         }
 
-        private async Task<bool> LeaveTypeExist(Guid Id, CancellationToken cancellationToken) => await (await _leaveTypeService.GetByIdAsync(Id, cancellationToken))
-            .FirstOrDefaultAsync(cancellationToken) != null;
+        private async Task<bool> LeaveTypeExist(Guid Id, CancellationToken cancellationToken) 
+            => await _leaveTypeService.GetByIdAsync(Id, cancellationToken) != null;
 
         private async Task<bool> LeaveTypeNameUnique(Command command, CancellationToken cancellationToken) 
             => await _leaveTypeService.IsLeaveTypeUnique(command.LeaveTypeForAddDto.Name, cancellationToken);
@@ -69,7 +68,7 @@ public class UpdateLeaveType
 
         public async Task<IResult> Handle(Command request, CancellationToken cancellationToken)
         {
-            var isExist = await (await _leaveTypeService.GetByIdAsync(request.LeaveTypeForAddDto.Id, cancellationToken)).FirstOrDefaultAsync(cancellationToken);
+            var isExist = await _leaveTypeService.GetByIdAsync(request.LeaveTypeForAddDto.Id, cancellationToken);
             if (isExist == null) throw new NotFoundException(nameof(LeaveType), request.LeaveTypeForAddDto.Id);
 
             var validator = new Validator(_leaveTypeService);

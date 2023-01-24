@@ -40,9 +40,9 @@ public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : 
         return await (await _genericRepository.GetAsync(expression, cancellationToken)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
     }
 
-    public async Task<IQueryable<TEntity>> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
+    public async Task<TEntity?> GetByIdAsync(Guid Id, CancellationToken cancellationToken)
     {
-        return await _genericRepository.GetByIdAsync(Id, cancellationToken);
+        return await (await _genericRepository.GetByIdAsync(Id, cancellationToken)).FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyList<TEntity>?> GetAllAsync(CancellationToken cancellationToken, Expression<Func<TEntity, bool>>? expression = null)

@@ -25,7 +25,7 @@ public class DeleteLeaveType
 
         public async Task<IResult> Handle(Command request, CancellationToken cancellationToken)
         {
-            var entity = await (await _leaveTypeService.GetByIdAsync(request.Id, cancellationToken)).FirstOrDefaultAsync(cancellationToken);
+            var entity = await _leaveTypeService.GetByIdAsync(request.Id, cancellationToken);
             if (entity == null) throw new NotFoundException(nameof(LeaveType), request.Id);
             
             var deleteResult = await _leaveTypeService.RemoveAsync(entity, cancellationToken);
