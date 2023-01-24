@@ -10,6 +10,6 @@ public interface IGenericService<TEntity>
     Task<bool> RemoveAsync(TEntity entity, CancellationToken cancellationToken);
     Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken);
     Task<TEntity?> GetByIdAsync(Guid Id, CancellationToken cancellationToken); 
-    Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken,
+    Task<IReadOnlyList<TEntity>?> GetAllAsync(CancellationToken cancellationToken,
         Expression<Func<TEntity, bool>>? expression = null);
 }
