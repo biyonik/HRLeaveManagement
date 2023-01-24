@@ -16,6 +16,6 @@ public class LeaveTypeService: GenericService<LeaveType>, ILeaveTypeService
 
     public async Task<bool> IsLeaveTypeUnique(string leaveTypeName, CancellationToken cancellationToken = default)
     {
-        return await _genericRepository.GetAsync(x => x.Name == leaveTypeName, cancellationToken).FirstOrDefaultAsync(cancellationToken: cancellationToken) != null;
+        return await (await _genericRepository.GetAsync(x => x.Name == leaveTypeName, cancellationToken)).FirstOrDefaultAsync(cancellationToken: cancellationToken) != null;
     }
 }

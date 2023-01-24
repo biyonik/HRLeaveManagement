@@ -37,7 +37,7 @@ public class GenericService<TEntity> : IGenericService<TEntity> where TEntity : 
 
     public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>>? expression, CancellationToken cancellationToken)
     {
-        return await _genericRepository.GetAsync(expression, cancellationToken).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        return await (await _genericRepository.GetAsync(expression, cancellationToken)).FirstOrDefaultAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<IQueryable<TEntity>> GetByIdAsync(Guid Id, CancellationToken cancellationToken)

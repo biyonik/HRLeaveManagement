@@ -37,11 +37,8 @@ public class CreateLeaveType
                 .WithMessage("Leave type name is exists!");
         }
 
-        private async Task<bool> LeaveTypeNameUnique(Command command, CancellationToken cancellationToken)
-        {
-            var result = await _leaveTypeService.IsLeaveTypeUnique(command.LeaveTypeForAddDto.Name, cancellationToken);
-            return result;
-        }
+        private async Task<bool> LeaveTypeNameUnique(Command command, CancellationToken cancellationToken) 
+            => await _leaveTypeService.IsLeaveTypeUnique(command.LeaveTypeForAddDto.Name, cancellationToken);
     }
 
 
