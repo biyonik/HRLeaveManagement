@@ -8,11 +8,17 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0-rc.2.22476.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
+      <ProjectReference Include="..\..\Core\HRLeaveManagement.Application\HRLeaveManagement.Application.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\HRLeaveManagement.Infrastructure\HRLeaveManagement.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\HRLeaveManagement.Persistence\HRLeaveManagement.Persistence.csproj" />
     </ItemGroup>
 
 </Project>

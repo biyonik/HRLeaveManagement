@@ -19,19 +19,19 @@ public static class PersistenceServiceRegistration
 
         #region Repositories
 
-        services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<,>));
-        services.AddScoped<ILeaveAllocationRepository, LeaveAllocationRepository>();
-        services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
-        services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
+        // services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<,>));
+        services.AddTransient<ILeaveAllocationRepository, LeaveAllocationRepository>();
+        services.AddTransient<ILeaveRequestRepository, LeaveRequestRepository>();
+        services.AddTransient<ILeaveTypeRepository, LeaveTypeRepository>();
         
         #endregion
 
         #region Services
 
-        services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
-        services.AddScoped<ILeaveTypeService, LeaveTypeService>();
-        services.AddScoped<ILeaveAllocationService, LeaveAllocationService>();
-        services.AddScoped<ILeaveRequestService, LeaveRequestService>();
+        services.AddTransient(typeof(IGenericService<>), typeof(GenericService<>));
+        services.AddTransient<ILeaveTypeService, LeaveTypeService>();
+        services.AddTransient<ILeaveAllocationService, LeaveAllocationService>();
+        services.AddTransient<ILeaveRequestService, LeaveRequestService>();
 
         #endregion
         

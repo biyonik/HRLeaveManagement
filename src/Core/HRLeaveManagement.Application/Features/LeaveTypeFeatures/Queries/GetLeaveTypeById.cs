@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using HRLeaveManagement.Application.Common.Result.Abstract;
+using HRLeaveManagement.Application.Common.Result.Concrete;
 using HRLeaveManagement.Application.Contracts.Services;
 using HRLeaveManagement.Application.DataTransformationObjects.LeaveType;
 using HRLeaveManagement.Application.Messaging;
@@ -9,13 +11,10 @@ public class GetLeaveTypeById
 {
     public sealed record Query(
         Guid Id
-    ) : IQuery<Response>;
+    ) : IQuery<IDataResult<LeaveTypeForDetailDto>>;
 
-    public sealed record Response(
-        LeaveTypeForDetailDto LeaveTypeForDetailDto
-    );
     
-    public class Handler: IQueryHandler<Query, Response>
+    public class Handler: IQueryHandler<Query, IDataResult<LeaveTypeForDetailDto>>
     {
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly IMapper _mapper;
@@ -26,11 +25,12 @@ public class GetLeaveTypeById
             _mapper = mapper;
         }
 
-        public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<IDataResult<LeaveTypeForDetailDto>> Handle(Query request, CancellationToken cancellationToken)
         {
             var leaveType = await _leaveTypeService.GetByIdAsync(request.Id, cancellationToken);
+            if (leaveType == null) return new ErrorDataResult<LeaveTypeForDetailDto>("Leave type not found!");
             var mappedData = _mapper.Map<LeaveTypeForDetailDto>(leaveType);
-            return new(mappedData);
+            return new SuccessDataResult<LeaveTypeForDetailDto>(mappedData);
         }
     }
 }

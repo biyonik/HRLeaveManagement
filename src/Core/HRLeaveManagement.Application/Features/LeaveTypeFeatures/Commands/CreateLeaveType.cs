@@ -2,6 +2,7 @@
 using FluentValidation;
 using HRLeaveManagement.Application.Common.Result.Abstract;
 using HRLeaveManagement.Application.Common.Result.Concrete;
+using HRLeaveManagement.Application.Contracts.Logging.Common;
 using HRLeaveManagement.Application.Contracts.Services;
 using HRLeaveManagement.Application.DataTransformationObjects.LeaveType;
 using HRLeaveManagement.Application.Exceptions;
@@ -24,13 +25,13 @@ public class CreateLeaveType
             _leaveTypeService = leaveTypeService;
             
             RuleFor(x => x.LeaveTypeForAddDto.Name)
-                .NotNull().WithMessage("{PropertyName} is required")
-                .NotEmpty().WithMessage("{PropertyName} is required")
-                .MaximumLength(70).WithMessage("{PropertyName} must be fewer than 70 characters");
+                .NotNull().WithMessage("Leave type name is required")
+                .NotEmpty().WithMessage("Leave type name is required")
+                .MaximumLength(70).WithMessage("Leave type name must be fewer than 70 characters");
 
             RuleFor(x => x.LeaveTypeForAddDto.DefaultDays)
-                .GreaterThan(100).WithMessage("{PropertyName} cannot exceed 100")
-                .LessThan(1).WithMessage("{PropertyName cannot be less than 1}");
+                .GreaterThan(1).WithMessage("Default days cannot be less than 1")
+                .LessThan(100).WithMessage("Default days cannot exceed 100");
 
             RuleFor(x => x)
                 .MustAsync(LeaveTypeNameUnique)
@@ -38,7 +39,7 @@ public class CreateLeaveType
         }
 
         private async Task<bool> LeaveTypeNameUnique(Command command, CancellationToken cancellationToken) 
-            => await _leaveTypeService.IsLeaveTypeUnique(command.LeaveTypeForAddDto.Name, cancellationToken);
+            => !await _leaveTypeService.IsLeaveTypeUnique(command.LeaveTypeForAddDto.Name, cancellationToken);
     }
 
 
@@ -46,24 +47,32 @@ public class CreateLeaveType
     {
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly IMapper _mapper;
+        private readonly IAppLogger<Handler> _logger;
 
-        public Handler(ILeaveTypeService leaveTypeService, IMapper mapper)
+        public Handler(ILeaveTypeService leaveTypeService, IMapper mapper, IAppLogger<Handler> logger)
         {
             _leaveTypeService = leaveTypeService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<IResult> Handle(Command request, CancellationToken cancellationToken)
         {
             var validator = new CommandValidator(_leaveTypeService);
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
-            if (validationResult.Errors.Any()) throw new BadRequestException("Invalid LeaveType", validationResult);
+            if (validationResult.Errors.Any())
+                return new ErrorDataResult<IList<string>>(validationResult.Errors.Select(x => x.ErrorMessage).ToList());
             
             var mappedData = _mapper.Map<LeaveType>(request.LeaveTypeForAddDto);
             
             var result = await _leaveTypeService.CreateAsync(mappedData, cancellationToken);
-            
-            if (result) return new SuccessResult("Leave type added successfully");
+
+            if (result)
+            {
+                _logger.LogInformation("New leave type created successfully.");
+                return new SuccessResult("Leave type added successfully.");
+            }
+            _logger.LogWarning("New leave type create failed!");
             return new ErrorResult("Leave type added failed!");
         }
     }

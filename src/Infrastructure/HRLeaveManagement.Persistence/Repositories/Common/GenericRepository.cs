@@ -9,7 +9,7 @@ public class GenericRepository<TEntity, TContext>: IGenericRepository<TEntity>
     where TEntity : BaseEntity, new()
     where TContext: DbContext, new()
 {
-    private TContext _context;
+    private readonly TContext _context;
     private DbSet<TEntity> Entity { get; set; }
 
     public GenericRepository()
