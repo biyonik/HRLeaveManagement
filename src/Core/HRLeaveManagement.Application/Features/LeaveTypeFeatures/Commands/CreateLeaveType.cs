@@ -17,19 +17,19 @@ public class CreateLeaveType
         LeaveTypeForAddDto LeaveTypeForAddDto    
     ) : ICommand<IResult>;
 
-    public class CommandValidator : AbstractValidator<Command>
+    public class CommandValidator : AbstractValidator<LeaveTypeForAddDto>
     {
         private readonly ILeaveTypeService _leaveTypeService;
         public CommandValidator(ILeaveTypeService leaveTypeService)
         {
             _leaveTypeService = leaveTypeService;
             
-            RuleFor(x => x.LeaveTypeForAddDto.Name)
+            RuleFor(x => x.Name)
                 .NotNull().WithMessage("Leave type name is required")
                 .NotEmpty().WithMessage("Leave type name is required")
                 .MaximumLength(70).WithMessage("Leave type name must be fewer than 70 characters");
 
-            RuleFor(x => x.LeaveTypeForAddDto.DefaultDays)
+            RuleFor(x => x.DefaultDays)
                 .GreaterThan(1).WithMessage("Default days cannot be less than 1")
                 .LessThan(100).WithMessage("Default days cannot exceed 100");
 
@@ -38,8 +38,8 @@ public class CreateLeaveType
                 .WithMessage("Leave type name is exists!");
         }
 
-        private async Task<bool> LeaveTypeNameUnique(Command command, CancellationToken cancellationToken) 
-            => !await _leaveTypeService.IsLeaveTypeUnique(command.LeaveTypeForAddDto.Name, cancellationToken);
+        private async Task<bool> LeaveTypeNameUnique(LeaveTypeForAddDto leaveTypeForAddDto, CancellationToken cancellationToken) 
+            => !await _leaveTypeService.IsLeaveTypeUnique(leaveTypeForAddDto.Name, cancellationToken);
     }
 
 
@@ -59,7 +59,7 @@ public class CreateLeaveType
         public async Task<IResult> Handle(Command request, CancellationToken cancellationToken)
         {
             var validator = new CommandValidator(_leaveTypeService);
-            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+            var validationResult = await validator.ValidateAsync(request.LeaveTypeForAddDto, cancellationToken);
             if (validationResult.Errors.Any())
                 return new ErrorDataResult<IList<string>>(validationResult.Errors.Select(x => x.ErrorMessage).ToList());
             
