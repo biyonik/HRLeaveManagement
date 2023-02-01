@@ -64,8 +64,8 @@ public class CreateLeaveAllocation
             if (validationResult.Errors.Any())
                 return new ErrorDataResult<IList<string>>(validationResult.Errors.Select(x => x.ErrorMessage).ToList());
 
-            var leaveType = await _leaveAllocationService.GetByIdAsync(request.LeaveAllocationForAddDto.LeaveTypeId, cancellationToken);
-            
+            var leaveType = await _leaveTypeService.GetByIdAsync(request.LeaveAllocationForAddDto.LeaveTypeId, cancellationToken);
+            if (leaveType != null) request.LeaveAllocationForAddDto.LeaveTypeId = leaveType.Id;
 
             var mappedData = _mapper.Map<LeaveAllocation>(request.LeaveAllocationForAddDto);
             var result = await _leaveAllocationService.CreateAsync(mappedData, cancellationToken);

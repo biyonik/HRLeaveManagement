@@ -1,4 +1,5 @@
-﻿using HRLeaveManagement.Application.Features.LeaveRequestFeatures.Commands;
+﻿using HRLeaveManagement.Application.DataTransformationObjects.LeaveRequest;
+using HRLeaveManagement.Application.Features.LeaveRequestFeatures.Commands;
 using HRLeaveManagement.Application.Features.LeaveRequestFeatures.Queries;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,27 @@ public class LeaveRequestsController: BaseApiController
         var query = new GetLeaveRequestById.Query(id);
         var mediatr = await Mediator!.Send(query);
         return HandleDataResult(mediatr);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Add(LeaveRequestForAddDto leaveRequestForAddDto)
+    {
+        var command = new CreateLeaveRequest.Command(leaveRequestForAddDto);
+        return await HandlePostRequest(command);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Update(LeaveRequestForUpdateDto leaveRequestForUpdateDto)
+    {
+        var command = new UpdateLeaveRequest.Command(leaveRequestForUpdateDto);
+        return await HandlePutRequest(command);
+    }
+
+    [HttpPut("cancelLeaveRequest/{id}")]
+    public async Task<IActionResult> CancelLeaveRequest(Guid id)
+    {
+        var command = new CancelLeaveRequest.Command(id);
+        return await HandlePutRequest(command);
     }
 
     [HttpDelete("{id}")]
