@@ -1,6 +1,7 @@
 using HRLeaveManagement.Application;
 using HRLeaveManagement.Infrastructure;
 using HRLeaveManagement.Persistence;
+using HRLeaveManagement.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,8 @@ builder.Services.AddCors((CorsOptions options) =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
