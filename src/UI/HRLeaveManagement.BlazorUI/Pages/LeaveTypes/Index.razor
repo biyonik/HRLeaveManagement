@@ -1,0 +1,39 @@
+﻿@page "/leavetypes/"
+
+<PageTitle>Leave Types</PageTitle>
+
+<h3>Leave Types</h3>
+
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+
+@if (LeaveTypes == null)
+{
+    
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Default Number Of Days</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var leaveType in LeaveTypes)
+        {
+            <tr>
+                <td>@leaveType.Id</td>
+                <td>@leaveType.Name</td>
+                <td>@leaveType.DefaultDays</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
